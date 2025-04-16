@@ -361,7 +361,7 @@ class FontViewerApp extends HTMLElement {
 
 The Font-Viewer will expose a RESTful API for other applications to interact with, implementing the interlacid compliance framework for robust API passthroughs with automatic fallback policies:
 
-```
+```text
 GET /api/fonts
 Returns a list of all available fonts
 Interlacid Policy: Cache fallback - Returns cached font list if scan fails
