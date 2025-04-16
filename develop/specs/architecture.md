@@ -6,7 +6,7 @@ The Font-Viewer application follows a component-based architecture with clear se
 
 ## Architecture Diagram
 
-```
+```ascii
 ┌─────────────────────────────────────────────────────────────────┐
 │                        FontViewerApp                            │
 └───────────────────────────────┬─────────────────────────────────┘
@@ -36,7 +36,7 @@ The Font-Viewer application follows a component-based architecture with clear se
 
 ## Component Hierarchy
 
-```
+```ascii
 FontViewerApp
 ├── AppHeader
 │   ├── AppTitle
@@ -212,10 +212,39 @@ The Font-Viewer application integrates with the Cyberdeck ecosystem:
    - Supports resizing and repositioning
    - Remembers window state
 
-3. **API**:
+3. **API with Interlacid Compliance**:
    - Exposes an API for other Cyberdeck applications
+   - Implements Interlacid framework for robust API passthroughs
+   - Provides automatic fallback policies for failure scenarios
    - Allows querying available fonts
    - Supports font selection events
+
+## Interlacid Framework
+
+The Font-Viewer application implements the Interlacid (Interlinked-ACID) framework for API passthroughs:
+
+1. **Automatic Rollback**:
+   - Failed operations automatically revert to previous state
+   - Ensures system consistency even during failures
+   - Provides predictable recovery patterns
+
+2. **Fallback Policies**:
+   - Cache fallback for font listing operations
+   - Default font fallback for font retrieval
+   - Snapshot rollback for collection updates
+   - Soft delete for collection removal
+
+3. **Transaction Flow**:
+   - Snapshot: Capture state before modification
+   - Attempt: Perform the requested operation
+   - Verify: Confirm successful completion
+   - Commit/Rollback: Finalize or revert changes
+   - Notify: Inform client of outcome and fallbacks
+
+4. **Client Integration**:
+   - API responses include fallback information
+   - UI provides feedback when fallbacks are applied
+   - Automatic retry mechanisms where appropriate
 
 ## Extensibility
 

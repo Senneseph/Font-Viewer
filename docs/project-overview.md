@@ -44,12 +44,14 @@ The primary purpose of Font-Viewer is to provide an intuitive and visually appea
 - Organize fonts by project, style, or purpose
 - Share collections with other applications
 
-### API for Integration
+### API for Integration with Interlacid Compliance
 
 - Query available fonts and their metadata
 - Select fonts for use in other applications
 - Listen for font selection events
 - Access font collections and favorites
+- Automatic fallback policies for failure scenarios
+- Predictable recovery patterns across all operations
 
 ## Architecture Overview
 
@@ -88,7 +90,7 @@ The implementation follows these key principles:
 
 ## Project Structure
 
-```
+```ascii
 Font-Viewer/
 ├── app/                  # Application code
 │   ├── assets/           # Static assets
@@ -137,13 +139,31 @@ The implementation is planned in five phases:
    - Prepare for deployment
    - Conduct final review
 
+## Interlacid Framework
+
+Font-Viewer implements the Interlacid (Interlinked-ACID) framework for robust API passthroughs with automatic fallback policies:
+
+1. **Automatic Rollback**: When an API call fails, the system automatically reverts to the previous state
+2. **Agreed Fallback Policies**: Both client and server agree on fallback behaviors in advance
+3. **Transaction Integrity**: Operations are treated as atomic transactions when possible
+4. **Predictable Recovery**: Users can rely on consistent recovery patterns
+
+Each API operation follows a transaction flow of Snapshot → Attempt → Verify → Commit/Rollback → Notify, ensuring that operations either complete fully or have well-defined fallback behaviors.
+
+Example fallback policies implemented in Font-Viewer:
+
+- **Cache Fallback**: Returns cached font list if scan fails
+- **Default Font Fallback**: Returns system default if font not found
+- **Snapshot Rollback**: Reverts to previous state if collection update fails
+- **Soft Delete**: Marks collections as deleted but preserves data for recovery
+
 ## Integration with Cyberdeck
 
 Font-Viewer integrates with the Cyberdeck ecosystem in several ways:
 
 1. **Theme Support**: Adapts to Cyberdeck themes and design language
 2. **Window Management**: Integrates with Cyberdeck window manager
-3. **API**: Exposes an API for other Cyberdeck applications
+3. **API with Interlacid**: Exposes an API for other Cyberdeck applications with robust fallback policies
 4. **Font Access**: Provides access to fonts for use in other applications
 
 ## Future Enhancements

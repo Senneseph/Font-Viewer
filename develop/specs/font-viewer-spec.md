@@ -118,27 +118,27 @@ class FontIndexService {
    * @returns Promise resolving to the updated font list
    */
   refreshFontIndex(): Promise<FontMetadata[]>;
-  
+
   /**
    * Get the current font index
    * @returns Array of font metadata
    */
   getFontIndex(): FontMetadata[];
-  
+
   /**
    * Get a specific font by ID
    * @param id The font ID to find
    * @returns The font metadata or undefined if not found
    */
   getFontById(id: string): FontMetadata | undefined;
-  
+
   /**
    * Search fonts by query string
    * @param query The search query
    * @returns Array of matching fonts
    */
   searchFonts(query: string): FontMetadata[];
-  
+
   /**
    * Filter fonts by criteria
    * @param criteria The filter criteria
@@ -164,19 +164,19 @@ class FontGridComponent extends HTMLElement {
    * @param fonts Array of font metadata
    */
   setFonts(fonts: FontMetadata[]): void;
-  
+
   /**
    * Update display options
    * @param options The grid display options
    */
   setOptions(options: FontGridOptions): void;
-  
+
   /**
    * Handle font selection
    * @param callback Function to call when a font is selected
    */
   onFontSelect(callback: (font: FontMetadata) => void): void;
-  
+
   /**
    * Handle font drag start
    * @param callback Function to call when a font drag starts
@@ -203,19 +203,19 @@ class FontPreviewComponent extends HTMLElement {
    * @param font The font metadata
    */
   setFont(font: FontMetadata): void;
-  
+
   /**
    * Set multiple fonts for comparison
    * @param fonts Array of font metadata
    */
   setFontsForComparison(fonts: FontMetadata[]): void;
-  
+
   /**
    * Update preview options
    * @param options The preview options
    */
   setOptions(options: PreviewOptions): void;
-  
+
   /**
    * Handle drop events
    * @param callback Function to call when a font is dropped
@@ -247,18 +247,18 @@ class DragDropManager {
    * @param draggable The draggable configuration
    */
   registerDraggable(draggable: Draggable): void;
-  
+
   /**
    * Register a drop zone
    * @param zone The drop zone configuration
    */
   registerDropZone(zone: DropZone): void;
-  
+
   /**
    * Enable drag and drop functionality
    */
   enable(): void;
-  
+
   /**
    * Disable drag and drop functionality
    */
@@ -283,21 +283,21 @@ class FontCollectionService {
    * @returns Array of collections
    */
   getCollections(): Promise<FontCollection[]>;
-  
+
   /**
    * Get a collection by ID
    * @param id The collection ID
    * @returns The collection or undefined if not found
    */
   getCollectionById(id: string): Promise<FontCollection | undefined>;
-  
+
   /**
    * Create a new collection
    * @param name The collection name
    * @returns The created collection
    */
   createCollection(name: string): Promise<FontCollection>;
-  
+
   /**
    * Add a font to a collection
    * @param collectionId The collection ID
@@ -305,7 +305,7 @@ class FontCollectionService {
    * @returns The updated collection
    */
   addFontToCollection(collectionId: string, fontId: string): Promise<FontCollection>;
-  
+
   /**
    * Remove a font from a collection
    * @param collectionId The collection ID
@@ -313,7 +313,7 @@ class FontCollectionService {
    * @returns The updated collection
    */
   removeFontFromCollection(collectionId: string, fontId: string): Promise<FontCollection>;
-  
+
   /**
    * Delete a collection
    * @param id The collection ID
@@ -331,24 +331,24 @@ class FontViewerApp extends HTMLElement {
    * Initialize the application
    */
   initialize(): Promise<void>;
-  
+
   /**
    * Refresh the font index
    */
   refreshFonts(): Promise<void>;
-  
+
   /**
    * Handle font selection
    * @param font The selected font
    */
   selectFont(font: FontMetadata): void;
-  
+
   /**
    * Add a font to favorites
    * @param font The font to add to favorites
    */
   addToFavorites(font: FontMetadata): void;
-  
+
   /**
    * Compare multiple fonts
    * @param fonts The fonts to compare
@@ -357,32 +357,49 @@ class FontViewerApp extends HTMLElement {
 }
 ```
 
-### API Endpoints
+### API Endpoints with Interlacid Compliance
 
-The Font-Viewer will expose a RESTful API for other applications to interact with:
+The Font-Viewer will expose a RESTful API for other applications to interact with, implementing the interlacid compliance framework for robust API passthroughs with automatic fallback policies:
 
 ```
 GET /api/fonts
 Returns a list of all available fonts
+Interlacid Policy: Cache fallback - Returns cached font list if scan fails
 
 GET /api/fonts/:id
 Returns details for a specific font
+Interlacid Policy: Default font fallback - Returns system default if font not found
 
 GET /api/collections
 Returns a list of user-created collections
+Interlacid Policy: Empty list fallback - Returns empty array if storage fails
 
 POST /api/collections
 Creates a new collection
+Interlacid Policy: Full rollback - No partial collection creation
 
 GET /api/collections/:id
 Returns details for a specific collection
+Interlacid Policy: Empty collection fallback - Returns empty collection if not found
 
 PUT /api/collections/:id
 Updates a collection
+Interlacid Policy: Snapshot rollback - Reverts to previous state if update fails
 
 DELETE /api/collections/:id
 Deletes a collection
+Interlacid Policy: Soft delete - Marks as deleted but preserves data for recovery
 ```
+
+### Interlacid Transaction Flow
+
+Each API operation follows this transaction flow:
+
+1. **Snapshot**: Capture the current state before modification
+2. **Attempt**: Perform the requested operation
+3. **Verify**: Confirm the operation completed successfully
+4. **Commit/Rollback**: Either commit the change or roll back to the snapshot
+5. **Notify**: Inform the client of the outcome and any fallback actions taken
 
 ### Event System
 
